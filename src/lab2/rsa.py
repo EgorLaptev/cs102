@@ -5,6 +5,11 @@ import typing as tp
 def is_prime(n: int) -> bool:
     """
     Tests to see if a number is prime.
+        Parameters:
+            n (int): first decimal number
+        Return value:
+            is_prime (bool): is prime
+
     >>> is_prime(2)
     True
     >>> is_prime(11)
@@ -23,6 +28,13 @@ def is_prime(n: int) -> bool:
 def gcd(a: int, b: int) -> int:
     """
     Euclid's algorithm for determining the greatest common divisor.
+        Parameters:
+            a (int): first decimal number
+            b (int): second decimal number
+        Return value:
+            gcd (int): the greatest common divisor
+
+
     >>> gcd(12, 15)
     3
     >>> gcd(3, 7)
@@ -41,6 +53,12 @@ def multiplicative_inverse(e: int, phi: int) -> int:
     """
     Euclid's extended algorithm for finding the multiplicative
     inverse of two numbers.
+        Parameters:
+            e (int): first decimal number
+            phi (int): second decimal number
+        Return value:
+            multiplicative_inverse (int): multiplicative inverse of two numbers
+
     >>> multiplicative_inverse(7, 40)
     23
     """
