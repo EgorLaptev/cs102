@@ -43,3 +43,8 @@ class TestSudoku(unittest.TestCase):
         self.assertEqual(find_empty_positions([['1', '2', '3'], ['4', '.', '6'], ['7', '8', '9']]), (1, 1))
         self.assertEqual(find_empty_positions([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']]), (2, 0))
         self.assertEqual(find_empty_positions([['1', '.', '3'], ['4', '5', '.'], ['.', '8', '9']]), (0, 1))
+
+    def test_find_possible_values(self):
+        grid = read_sudoku('src/lab3/puzzle1.txt')
+        self.assertEqual(find_possible_values(grid, (0,2)), {'1', '2', '4'})
+        self.assertEqual(find_possible_values(grid, (4,7)), {'2', '5', '9'})
