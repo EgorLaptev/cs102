@@ -1,6 +1,6 @@
 import unittest
 
-from src.lab3.sudoku import group, get_row, get_col, get_block
+from src.lab3.sudoku import group, get_row, get_col, get_block, read_sudoku
 
 class TestSudoku(unittest.TestCase):
     
@@ -9,6 +9,7 @@ class TestSudoku(unittest.TestCase):
         self.get_row = get_row
         self.get_col = get_col
         self.get_block = get_block
+        self.read_sudoku = read_sudoku
 
     def test_group(self):
         self.assertEqual(group([1, 2, 3, 4], 2), [[1, 2], [3, 4]])
@@ -19,7 +20,6 @@ class TestSudoku(unittest.TestCase):
         self.assertEqual(get_row([['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']], (0, 0)), ['1', '2', '.'])
         self.assertEqual(get_row([['1', '2', '3'], ['4', '.', '6'], ['7', '8', '9']], (1, 0)), ['4', '.', '6'])
         self.assertEqual(get_row([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (2, 0)), ['.', '8', '9'])
-
         self.assertEqual(get_row([['1']], (0, 0)), ['1'])
         self.assertEqual(get_row([['1', '2'], ['4', '.']], (1, 0)), ['4', '.'])
         self.assertEqual(get_row([['1', '2', '.', '2'], ['4', '5', '6', '.'], ['7', '8', '9', '0'], ['1', '2', '3', '1']], (2, 0)), ['7', '8', '9', '0'])
@@ -28,7 +28,12 @@ class TestSudoku(unittest.TestCase):
         self.assertEqual(get_col([['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']], (0, 0)), ['1', '4', '7'])
         self.assertEqual(get_col([['1', '2', '3'], ['4', '.', '6'], ['7', '8', '9']], (0, 1)), ['2', '.', '8'])
         self.assertEqual(get_col([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (0, 2)), ['3', '6', '9'])
-
         self.assertEqual(get_col([['1']], (0, 0)), ['1'])
         self.assertEqual(get_col([['1', '2'], ['4', '.']], (0, 1)), ['2', '.'])
         self.assertEqual(get_col([['1', '2', '.', '2'], ['4', '5', '6', '.'], ['7', '8', '9', '0'], ['1', '2', '3', '1']], (0, 3)), ['2', '.', '0', '1'])
+
+    def test_get_block(self):
+        grid = read_sudoku('src/lab3/puzzle1.txt')
+        self.assertEqual(get_block(grid, (0, 1)), ['5', '3', '.', '6', '.', '.', '.', '9', '8'])
+        self.assertEqual(get_block(grid, (4, 7)), ['.', '.', '3', '.', '.', '1', '.', '.', '6'])
+        self.assertEqual(get_block(grid, (8, 8)), ['2', '8', '.', '.', '.', '5', '.', '7', '9'])
