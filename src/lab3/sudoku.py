@@ -1,4 +1,5 @@
 import pathlib
+import threading, multiprocessing
 import typing as tp
 from random import randint
 
@@ -235,17 +236,35 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
 
     return grid
 
+def run_solve(filename: str) -> None:
+    grid = read_sudoku(filename)
+    solution = solve(grid)
+    if not solution:
+        print(f"Puzzle {filename} can't be solved")
+    else:
+        display(solution)
+        if check_solution(solution):
+            print('Solution is correct')
+        else:
+            print('Oops')
 
 if __name__ == "__main__":
-    for fname in ["puzzle1.txt", "puzzle2.txt", "puzzle3.txt"]:
-        grid = read_sudoku(fname)
-        display(grid)
-        solution = solve(grid)
-        if not solution:
-            print(f"Puzzle {fname} can't be solved")
-        else:
-            display(solution)
-            if check_solution(solution):
-                print('Solution is correct')
-            else:
-                print('Oops')
+    for filename in ("puzzle1.txt", "puzzle2.txt", "puzzle3.txt"):
+        p = multiprocessing.Process(target=run_solve, args=(filename,))
+        p.start()
+
+
+
+# if __name__ == "__main__":
+#     for fname in ["puzzle1.txt", "puzzle2.txt", "puzzle3.txt"]:
+#         grid = read_sudoku(fname)
+#         display(grid)
+#         solution = solve(grid)
+#         if not solution:
+#             print(f"Puzzle {fname} can't be solved")
+#         else:
+#             display(solution)
+#             if check_solution(solution):
+#                 print('Solution is correct')
+#             else:
+#                 print('Oops')
