@@ -71,7 +71,7 @@ def get_col(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str
     >>> get_col([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (0, 2))
     ['3', '6', '9']
     """
-    
+
     col = [ row[pos[1]] for row in grid ]
 
     return col
@@ -107,10 +107,11 @@ def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[in
     >>> find_empty_positions([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']])
     (2, 0)
     """
-    
-    pos = tuple([[i, j] for i in range(3) for j in range(3) if grid[i][j] == '.'][0])
+    n = len(grid)
+    positions = [[i, j] for i in range(n) for j in range(n) if grid[i][j] == '.']
 
-    return pos
+    return tuple(positions[0]) if len(positions) else False
+
 
 def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.Set[str]:
     """Вернуть множество возможных значения для указанной позиции
@@ -147,7 +148,25 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
     >>> solve(grid)
     [['5', '3', '4', '6', '7', '8', '9', '1', '2'], ['6', '7', '2', '1', '9', '5', '3', '4', '8'], ['1', '9', '8', '3', '4', '2', '5', '6', '7'], ['8', '5', '9', '7', '6', '1', '4', '2', '3'], ['4', '2', '6', '8', '5', '3', '7', '9', '1'], ['7', '1', '3', '9', '2', '4', '8', '5', '6'], ['9', '6', '1', '5', '3', '7', '2', '8', '4'], ['2', '8', '7', '4', '1', '9', '6', '3', '5'], ['3', '4', '5', '2', '8', '6', '1', '7', '9']]
     """
-    pass
+    
+    current_pos = find_empty_positions(grid)
+
+    if not current_pos:
+        return True
+
+    possible_values = find_possible_values(grid, current_pos)
+    
+    for current_value in possible_values:
+        row, col = current_pos
+        grid[row][col] = current_value
+        
+        if solve(grid):
+            return grid
+
+        grid[row][col] = '.'
+
+    
+    return False
 
 
 def check_solution(solution: tp.List[tp.List[str]]) -> bool:
@@ -168,13 +187,13 @@ def check_solution(solution: tp.List[tp.List[str]]) -> bool:
     """
 
     n = len(solution)
-    rows = [ set(row) for row in solution ]
-    cols = [ set(get_col(solution, (0, col))) for col in range(n) ]
-    blocks = [ set(get_block(solution, (row, col))) for row in range(0, n, 3) for col in range(0, n, 3) ]
+    rows = [ [num for num in row if num != '.'] for row in solution ]
+    cols = [ [num for num in get_col(solution, (0, col)) if num != '.'] for col in range(n) ]
+    blocks = [ [num for num in get_block(solution, (row, col)) if num != '.'] for row in range(0, n, 3) for col in range(0, n, 3) ]
     
-    uniq_rows = all([ len(row) == n for row in rows ])
-    uniq_cols = all([ len(col) == n for col in cols ])
-    uniq_blocks = all([ len(block) == n for block in blocks ])
+    uniq_rows = all([ len(row) == len(set(row)) for row in rows ])
+    uniq_cols = all([ len(col) == len(set(col)) for col in cols ])
+    uniq_blocks = all([ len(block) == len(set(block)) for block in blocks ])
 
     return uniq_rows and uniq_cols and uniq_blocks
 
@@ -218,7 +237,7 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
 
 
 if __name__ == "__main__":
-    for fname in ["puzzle1.txt"]:
+    for fname in ["puzzle1.txt", "puzzle2.txt", "puzzle3.txt"]:
         grid = read_sudoku(fname)
         display(grid)
         solution = solve(grid)
@@ -226,3 +245,7 @@ if __name__ == "__main__":
             print(f"Puzzle {fname} can't be solved")
         else:
             display(solution)
+            if check_solution(solution):
+                print('Solution is correct')
+            else:
+                print('Oops')
