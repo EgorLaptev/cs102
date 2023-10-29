@@ -71,3 +71,8 @@ class TestSudoku(unittest.TestCase):
             ['9', '6', '1', '5', '3', '7', '2', '8', '4'], 
             ['2', '8', '7', '4', '1', '9', '6', '3', '5'], 
             ['3', '4', '5', '2', '8', '6', '1', '7', '9']]), False)
+        
+    def test_generate_sudoku(self):
+        self.assertEqual(sum(1 for row in generate_sudoku(40) for e in row if e == '.'), 41)
+        self.assertEqual(sum(1 for row in generate_sudoku(1000) for e in row if e == '.'), 0)
+        self.assertEqual(sum(1 for row in generate_sudoku(0) for e in row if e == '.'), 81)
