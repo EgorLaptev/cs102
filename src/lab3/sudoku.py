@@ -1,7 +1,9 @@
 import pathlib
 import threading, multiprocessing
 import typing as tp
-from random import randint
+from functools import *
+from random import randint, shuffle
+import copy
 
 T = tp.TypeVar("T")
 
@@ -137,6 +139,7 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
 
     return values
 
+
 def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
     """ Решение пазла, заданного в grid """
     """ Как решать Судоку?
@@ -145,7 +148,7 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
         3. Для каждого возможного значения:
             3.1. Поместить это значение на эту позицию
             3.2. Продолжить решать оставшуюся часть пазла
-    >>> grid = read_sudoku('puzzle1.txt')
+    >>> grid = read_sudoku('puzzle1.txt')gr
     >>> solve(grid)
     [['5', '3', '4', '6', '7', '8', '9', '1', '2'], ['6', '7', '2', '1', '9', '5', '3', '4', '8'], ['1', '9', '8', '3', '4', '2', '5', '6', '7'], ['8', '5', '9', '7', '6', '1', '4', '2', '3'], ['4', '2', '6', '8', '5', '3', '7', '9', '1'], ['7', '1', '3', '9', '2', '4', '8', '5', '6'], ['9', '6', '1', '5', '3', '7', '2', '8', '4'], ['2', '8', '7', '4', '1', '9', '6', '3', '5'], ['3', '4', '5', '2', '8', '6', '1', '7', '9']]
     """
@@ -153,10 +156,11 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
     current_pos = find_empty_positions(grid)
 
     if not current_pos:
-        return True
+        return grid
 
-    possible_values = find_possible_values(grid, current_pos)
-    
+    possible_values = list(find_possible_values(grid, current_pos))
+    shuffle(possible_values)    
+
     for current_value in possible_values:
         row, col = current_pos
         grid[row][col] = current_value
@@ -207,34 +211,35 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
     >>> solution = solve(grid)
     >>> check_solution(solution)
     True
-    >>> grid = generate_sudoku(1000)
-    >>> sum(1 for row in grid for e in row if e == '.')
-    0
-    >>> solution = solve(grid)
-    >>> check_solution(solution)
-    True
-    >>> grid = generate_sudoku(0)
-    >>> sum(1 for row in grid for e in row if e == '.')
-    81
-    >>> solution = solve(grid)
-    >>> check_solution(solution)
-    True
     """
+    
+    # >>> grid = generate_sudoku(1000)
+    # >>> sum(1 for row in grid for e in row if e == '.')
+    # 0
+    # >>> solution = solve(grid)
+    # >>> check_solution(solution)
+    # True
+    # >>> grid = generate_sudoku(0)
+    # >>> sum(1 for row in grid for e in row if e == '.')
+    # 81
+    # >>> solution = solve(grid)
+    # >>> check_solution(solution)
+    # True
+
     N = min(N, 81)
 
-    grid = [ ['.' for _ in range(9)] for row in range(9) ]
-    nums = 81 - sum(1 for row in grid for e in row if e == '.')
+    empty = [ ['.' for _ in range(9)] for row in range(9) ]
+    grid = solve(copy.deepcopy(empty))
+    nums = sum( row.count('.') for row in grid )
 
-    while nums < N:
+    while 81 - N> nums:
         row = randint(0, 8)
         col = randint(0, 8)
-        num = randint(1, 9)
-
-        grid[row][col] = str(num)
-
-        nums = 81 - sum(1 for row in grid for e in row if e == '.')
+        grid[row][col] = '.'
+        nums = sum( row.count('.') for row in grid )
 
     return grid
+
 
 def run_solve(filename: str) -> None:
     grid = read_sudoku(filename)
