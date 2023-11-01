@@ -5,12 +5,12 @@
 
 from typing import List, Dict, Set
 
-def get_views(movies: Set) -> Dict[str,int]:
+def get_views(movies: Set, users_history: List) -> Dict[str,int]:
     """ This function returns the number of views for each movie """
     views = {}
 
     for movie in movies:
-        views[movie] = sum(user.count(movie) for user in history)
+        views[movie] = sum(user.count(movie) for user in users_history)
 
     return views
 
@@ -25,7 +25,7 @@ def get_recommendations(views: List, users_history: List) -> Dict[str, int]:
             result |= { movie for movie in user if movie not in views }
 
 
-    return get_views(result)
+    return get_views(result, users_history)
 
 
 if __name__ == '__main__':
