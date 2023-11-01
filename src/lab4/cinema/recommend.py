@@ -30,7 +30,7 @@ def get_views(movies: Set, users_history: List) -> Dict[str,int]:
     return views
 
 
-def get_recommendations(views: List, users_history: List) -> Dict[str, int]:
+def get_recommendations(views: List, users_history: List) -> Set:
     """ This function returns all recommendations based on user history """
     result = set()
 
