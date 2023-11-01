@@ -40,7 +40,7 @@ def get_recommendations(views: List, users_history: List) -> Dict[str, int]:
             result |= { movie for movie in user if movie not in views }
 
 
-    return get_views(result, users_history)
+    return result
 
 
 if __name__ == '__main__':
@@ -55,10 +55,11 @@ if __name__ == '__main__':
 
     # get all recommendations by user history
     recommendations = get_recommendations(user_history, all_history)
+    recommendations_views = get_views(recommendations, all_history)
 
-    if len(recommendations):
+    if len(recommendations) > 0:
         # get the most viewed recommendation
-        recommendation_id = max(recommendations, key=recommendations.get)
+        recommendation_id = max(recommendations_views, key=recommendations_views.get)
         recommendation_name = all_movies[recommendation_id]
         print(recommendation_name)
     else:
