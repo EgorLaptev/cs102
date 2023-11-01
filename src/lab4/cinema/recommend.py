@@ -5,6 +5,21 @@
 
 from typing import List, Dict, Set
 
+
+def read_history(path: str) -> List:
+    """ This function return all history of other users from file """
+    with open(path, 'r', encoding='UTF-8') as history_file:
+        return [ user.split(',') for user in history_file.read().splitlines() ]
+
+
+def read_movies(path: str) -> Dict:
+    """ This function return all movies """
+    with open(path, 'r', encoding='UTF-8') as movies_file:
+        result = [ movie.split(',') for movie in movies_file.read().splitlines() ]
+        result = { movie[0]:movie[1] for movie in result }
+    return result
+
+
 def get_views(movies: Set, users_history: List) -> Dict[str,int]:
     """ This function returns the number of views for each movie """
     views = {}
@@ -33,18 +48,13 @@ if __name__ == '__main__':
     user_history = input().split(',')
 
     # get the history of others
-    with open('data/history.txt', 'r', encoding='UTF-8') as history_file:
-        history = [ user.split(',') for user in history_file.read().splitlines() ]
+    all_history = read_history('data/history.txt')
 
-
-    # get the movies
-    with open('data/movies.txt', 'r', encoding='UTF-8') as movies_file:
-        all_movies = [ movie.split(',') for movie in movies_file.read().splitlines() ]
-        all_movies = { movie[0]:movie[1] for movie in all_movies }
-
+    # get the all movies
+    all_movies = read_movies('data/movies.txt')
 
     # get all recommendations by user history
-    recommendations = get_recommendations(user_history, history)
+    recommendations = get_recommendations(user_history, all_history)
 
     if len(recommendations):
         # get the most viewed recommendation
