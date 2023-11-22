@@ -199,7 +199,7 @@ def check_solution(solution: tp.List[tp.List[str]]) -> bool:
     uniq_rows = all([ len(row) == len(set(row)) for row in rows ])
     uniq_cols = all([ len(col) == len(set(col)) for col in cols ])
     uniq_blocks = all([ len(block) == len(set(block)) for block in blocks ])
-
+    
     solved = all( '.' not in row for row in solution )
 
     return uniq_rows and uniq_cols and uniq_blocks and solved
