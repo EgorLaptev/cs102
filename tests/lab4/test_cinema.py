@@ -1,6 +1,6 @@
 import unittest
 
-from src.lab4.cinema.cinema import Recommendations
+from src.lab4.cinema.main import Recommendations
 
 class TestCinema(unittest.TestCase):
     
